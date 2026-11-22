@@ -14,6 +14,7 @@ import ProfileView from '../views/ProfileView.vue'
 
 import MyInstructionsView from '../views/MyInstructionsView.vue'
 import InstructionCreateView from '../views/InstructionCreateView.vue'
+import InstructionEditView from '../views/InstructionEditView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -70,6 +71,14 @@ const router = createRouter({
       path: '/instructions/create',
       name: 'instruction-create',
       component: InstructionCreateView,
+      meta: {
+        requiresAuth: true,
+      },
+    },
+    {
+      path: '/instructions/:id/edit',
+      name: 'instruction-edit',
+      component: InstructionEditView,
       meta: {
         requiresAuth: true,
       },

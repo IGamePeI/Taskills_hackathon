@@ -264,4 +264,4 @@ async function submitInstruction() {
   </main>
 </template>
 
-<style lang="scss" src="../assets/styles/instruction-create.scss"></style>
+<style scoped lang="scss" src="../assets/styles/instruction-create.scss"></style>

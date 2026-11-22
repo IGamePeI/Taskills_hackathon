@@ -1,0 +1,436 @@
+@use './variables' as *;
+@use './mixins' as *;
+
+.instruction-edit-page {
+  min-height: 100vh;
+  padding-bottom: $spacing-3xl;
+  background: $surface;
+}
+
+.edit-top-background {
+  border-bottom: 1px solid $border;
+  background: $background;
+  @include paper-texture;
+}
+
+.edit-container {
+  @include container;
+}
+
+.edit-intro {
+  padding: $spacing-xl;
+
+  h1 {
+    margin-bottom: $spacing-lg;
+    color: $text;
+    font-family: $font-family-display;
+    font-size: clamp(48px, 6vw, 76px);
+    font-weight: 400;
+    line-height: 1;
+
+    span {
+      display: block;
+      color: $primary;
+      font-style: italic;
+    }
+  }
+
+  p {
+    color: $text-secondary;
+    line-height: 1.7;
+  }
+}
+
+.edit-eyebrow,
+.edit-section-index {
+  display: block;
+  margin-bottom: $spacing-md;
+  color: $primary;
+  font-family: $font-family-mono;
+  font-size: $font-size-xs;
+  letter-spacing: 0.5px;
+}
+
+.edit-form {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: $spacing-2xl $spacing-xl;
+}
+
+.edit-information {
+  padding-bottom: $spacing-xl;
+  border-bottom: 1px solid $border;
+
+  h2 {
+    margin: 0 0 $spacing-md;
+    color: $text;
+    font-family: $font-family-display;
+    font-size: 36px;
+    font-weight: 400;
+  }
+
+  > p {
+    color: $text-secondary;
+    line-height: 1.7;
+  }
+}
+
+.edit-category {
+  display: flex;
+  align-items: center;
+  gap: $spacing-md;
+  margin-top: $spacing-lg;
+
+  span {
+    color: $text-secondary;
+    font-family: $font-family-mono;
+    font-size: 10px;
+  }
+
+  strong {
+    color: $primary;
+    font-size: $font-size-sm;
+  }
+}
+
+.edit-note {
+  margin-top: $spacing-lg;
+  font-size: $font-size-xs;
+}
+
+.edit-steps-section {
+  padding: $spacing-xl 0;
+  border-bottom: 1px solid $border;
+}
+
+.edit-section-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+  gap: $spacing-md;
+  margin-bottom: $spacing-xl;
+
+  h2 {
+    margin: 0;
+    color: $text;
+    font-family: $font-family-display;
+    font-size: 40px;
+    font-weight: 400;
+  }
+}
+
+.edit-steps-count {
+  color: $text-secondary;
+  font-family: $font-family-mono;
+  font-size: 10px;
+}
+
+.edit-steps-list {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-lg;
+}
+
+.edit-step {
+  padding: $spacing-lg;
+  border: 1px solid $border;
+  border-radius: $radius-lg;
+  background: $surface-raised;
+}
+
+.edit-step-heading {
+  display: flex;
+  align-items: center;
+  gap: $spacing-md;
+  margin-bottom: $spacing-xl;
+  padding-bottom: $spacing-md;
+  border-bottom: 1px solid $border;
+}
+
+.edit-step-number {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 48px;
+  width: 48px;
+  height: 48px;
+  border: 1px solid rgba($primary, 0.35);
+  border-radius: $radius-md;
+  background: rgba($primary, 0.06);
+  color: $primary;
+  font-family: $font-family-display;
+  font-size: 24px;
+}
+
+.edit-step-title {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 4px;
+
+  span {
+    color: $primary;
+    font-family: $font-family-mono;
+    font-size: 10px;
+    letter-spacing: 0.5px;
+  }
+
+  strong {
+    color: $text;
+    font-family: $font-family-display;
+    font-size: 22px;
+    font-weight: 400;
+  }
+}
+
+.edit-remove-step {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  border: 1px solid $border;
+  border-radius: $radius-sm;
+  background: transparent;
+  color: $text-secondary;
+  font-family: $font-family;
+  font-size: $font-size-xs;
+  cursor: pointer;
+
+  span {
+    font-size: 18px;
+  }
+
+  &:hover {
+    border-color: $primary;
+    color: $primary;
+  }
+}
+
+.edit-fields {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-lg;
+}
+
+.edit-field {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-sm;
+  min-width: 0;
+
+  > span {
+    color: $text;
+    font-size: $font-size-sm;
+    font-weight: 600;
+
+    i {
+      color: $primary;
+      font-style: normal;
+    }
+  }
+
+  input,
+  textarea {
+    scrollbar-width: none;
+    width: 100%;
+    min-width: 0;
+    padding: 14px 16px;
+    border: 1px solid $border;
+    border-radius: $radius-md;
+    outline: none;
+    background: $surface-raised;
+    color: $text;
+    font-family: $font-family;
+    font-size: $font-size-sm;
+    line-height: 1.6;
+    transition:
+      border-color 0.2s ease,
+      box-shadow 0.2s ease;
+
+    &::placeholder {
+      color: rgba($text-secondary, 0.7);
+    }
+
+    &:focus {
+      border-color: $primary;
+      box-shadow: 0 0 0 3px rgba($primary, 0.07);
+    }
+
+    &::-webkit-scrollbar {
+      display: none; /* Chrome, Safari, Edge */
+    }
+  }
+
+  textarea {
+    min-height: 110px;
+    resize: vertical;
+  }
+
+  small {
+    color: $text-secondary;
+    font-size: $font-size-xs;
+    line-height: 1.5;
+  }
+}
+
+.edit-add-step {
+  width: 100%;
+  min-height: 52px;
+  margin-top: $spacing-lg;
+  border: 1px dashed rgba($primary, 0.55);
+  border-radius: $radius-md;
+  background: transparent;
+  color: $primary;
+  font-family: $font-family;
+  font-weight: 600;
+  cursor: pointer;
+
+  &:hover {
+    background: rgba($primary, 0.05);
+  }
+}
+
+.edit-error {
+  margin-top: $spacing-lg;
+  padding: $spacing-md;
+  border: 1px solid rgba($primary, 0.4);
+  border-radius: $radius-md;
+  color: $primary;
+  background: rgba($primary, 0.06);
+  font-size: $font-size-sm;
+}
+
+.edit-actions {
+  display: flex;
+  justify-content: space-between;
+  gap: $spacing-md;
+  padding-top: $spacing-xl;
+
+  button {
+    min-height: 50px;
+    padding: 0 20px;
+    border-radius: $radius-md;
+    font-family: $font-family;
+    font-size: $font-size-sm;
+    font-weight: 600;
+    cursor: pointer;
+
+    &:disabled {
+      cursor: wait;
+      opacity: 0.6;
+    }
+  }
+}
+
+.edit-delete-button {
+  border: 1px solid $primary;
+  background: transparent;
+  color: $primary;
+
+  &:hover:not(:disabled) {
+    background: rgba($primary, 0.06);
+  }
+}
+
+.edit-save-button {
+  border: 1px solid $primary;
+  background: $primary;
+  color: $surface;
+
+  &:hover:not(:disabled) {
+    background: $primary-hover;
+  }
+}
+
+.edit-state {
+  padding: $spacing-3xl $spacing-lg;
+  text-align: center;
+
+  h2 {
+    color: $text;
+    font-family: $font-family-display;
+    font-size: 36px;
+    font-weight: 400;
+  }
+
+  p {
+    color: $text-secondary;
+  }
+}
+
+.edit-back-link {
+  color: $primary;
+}
+
+@include tablet {
+  .edit-intro {
+    grid-template-columns: minmax(0, 1fr) 160px;
+    gap: $spacing-lg;
+  }
+
+  .edit-form {
+    padding-right: $spacing-md;
+    padding-left: $spacing-md;
+  }
+}
+
+@include mobile {
+  .edit-top-background {
+    padding: 0;
+  }
+
+  .edit-intro {
+    padding: $spacing-md 0;
+
+    h1 {
+      font-size: clamp(44px, 10vw, 60px);
+    }
+  }
+
+  .edit-form {
+    padding: $spacing-xl 0;
+  }
+
+  .edit-information {
+    padding-bottom: $spacing-lg;
+  }
+
+  .edit-step {
+    padding: $spacing-md;
+  }
+
+  .edit-step-heading {
+    gap: $spacing-sm;
+  }
+
+  .edit-step-number {
+    flex-basis: 40px;
+    width: 40px;
+    height: 40px;
+    font-size: 21px;
+  }
+
+  .edit-remove-step {
+    padding: 4px 8px;
+  }
+
+  .edit-actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .edit-delete-button,
+  .edit-save-button {
+    width: 100%;
+  }
+}
+
+@include small-mobile {
+  .edit-intro h1 {
+    font-size: 42px;
+  }
+
+  .edit-step-heading strong {
+    font-size: 19px;
+  }
+}
