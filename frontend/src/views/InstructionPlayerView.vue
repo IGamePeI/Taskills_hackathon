@@ -84,7 +84,7 @@ async function loadInstruction() {
       return
     }
 
-    progress.loadProgress(id, instruction.value.steps.length)
+    await progress.loadProgress(id, instruction.value.steps.length)
 
     isStepConfirmed.value = progress.activeStepNumber <= progress.lastCompletedStep
   } catch (err) {

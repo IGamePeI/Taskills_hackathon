@@ -2,36 +2,33 @@ import { computed, ref } from 'vue'
 import { defineStore } from 'pinia'
 
 import { progressApi } from '../api/progress.api'
+import { useAuthStore } from './auth'
+
 import type { StoredProgress } from '../types/progress'
 
 // состояние прохождения инструкции
 export const useProgressStore = defineStore('progress', () => {
+  const auth = useAuthStore()
+
   const lastCompletedStep = ref(0)
   const activeStepNumber = ref(1)
   const isCompleted = ref(false)
 
   const isSaving = ref(false)
 
-  // идентификатор гостевой сессии
-  function getSessionId(): string {
-    const key = 'guide-list-session'
-
-    let sessionId = localStorage.getItem(key)
-
-    if (!sessionId) {
-      sessionId = crypto.randomUUID()
-      localStorage.setItem(key, sessionId)
+  // Проверяем авторизацию перед работой с прогрессом
+  async function ensureAuthInitialized() {
+    if (!auth.isInitialized) {
+      await auth.fetchCurrentUser()
     }
-
-    return sessionId
   }
 
-  // ключ локального сохранения инструкции
+  // Ключ локального сохранения инструкции
   function getStorageKey(instructionId: number): string {
     return `guide-list-progress-${instructionId}`
   }
 
-  // сохраняем состояние в браузере
+  // Сохраняем состояние в браузере
   function saveLocalProgress(instructionId: number) {
     const data: StoredProgress = {
       lastCompletedStep: lastCompletedStep.value,
@@ -42,15 +39,8 @@ export const useProgressStore = defineStore('progress', () => {
     localStorage.setItem(getStorageKey(instructionId), JSON.stringify(data))
   }
 
-  // загрузка сохраненного прогресса
-  function loadProgress(instructionId: number, totalSteps: number) {
-    // начальное состояние
-    lastCompletedStep.value = 0
-    activeStepNumber.value = 1
-    isCompleted.value = false
-
-    if (totalSteps <= 0) return
-
+  // Загружаем прогресс гостя из localStorage
+  function loadLocalProgress(instructionId: number, totalSteps: number) {
     const key = getStorageKey(instructionId)
     const saved = localStorage.getItem(key)
 
@@ -59,101 +49,179 @@ export const useProgressStore = defineStore('progress', () => {
     try {
       const data: Partial<StoredProgress> = JSON.parse(saved)
 
-      // проверяем кол-во выполненных шагов
       const savedLastStep = Number(data.lastCompletedStep)
+      const safeLastStep = Number.isFinite(savedLastStep)
+        ? Math.trunc(savedLastStep)
+        : 0
 
-      const safeLastStep = Number.isFinite(savedLastStep) ? Math.trunc(savedLastStep) : 0
+      lastCompletedStep.value = Math.min(
+        Math.max(safeLastStep, 0),
+        totalSteps,
+      )
 
-      lastCompletedStep.value = Math.min(Math.max(safeLastStep, 0), totalSteps)
+      isCompleted.value =
+        data.isCompleted === true &&
+        lastCompletedStep.value === totalSteps
 
-      // проверяем статус завершения
-      isCompleted.value = data.isCompleted === true && lastCompletedStep.value === totalSteps
-
-      // проверяем номер активного шага
       const savedActiveStep = Number(data.activeStepNumber)
-
       const safeActiveStep = Number.isFinite(savedActiveStep)
         ? Math.trunc(savedActiveStep)
         : lastCompletedStep.value + 1
 
-      const maxActiveStep = Math.min(lastCompletedStep.value + 1, totalSteps)
+      const maxActiveStep = Math.min(
+        lastCompletedStep.value + 1,
+        totalSteps,
+      )
 
       activeStepNumber.value = isCompleted.value
         ? totalSteps
         : Math.min(Math.max(safeActiveStep, 1), maxActiveStep)
 
-      // сохраняем уже проверенные данные
+      // Сохраняем уже проверенные данные
       saveLocalProgress(instructionId)
     } catch (error) {
       console.warn('Не удалось прочитать сохранённый прогресс:', error)
-
-      // удаляем повреждённую запись
       localStorage.removeItem(key)
     }
   }
 
-  // сбрасываем прогресс инструкции
-  async function resetProgress(instructionId: number) {
+  // Загружаем сохранённый прогресс
+  async function loadProgress(instructionId: number, totalSteps: number) {
     lastCompletedStep.value = 0
     activeStepNumber.value = 1
     isCompleted.value = false
 
-    // сохраняем сброшенное состояние в браузере
-    saveLocalProgress(instructionId)
+    if (totalSteps <= 0) return
 
-    // отправляем обновлённый прогресс на backend
-    await syncProgress(instructionId)
+    await ensureAuthInitialized()
+
+    // Авторизованный пользователь получает прогресс с backend
+    if (auth.isAuthenticated) {
+      try {
+        const records = await progressApi.getMyProgress()
+
+        const saved = records.find(
+          (record) => record.instruction_id === instructionId,
+        )
+
+        if (!saved) return
+
+        lastCompletedStep.value = Math.min(
+          Math.max(saved.last_completed_step, 0),
+          totalSteps,
+        )
+
+        isCompleted.value =
+          saved.is_completed &&
+          lastCompletedStep.value === totalSteps
+
+        activeStepNumber.value = isCompleted.value
+          ? totalSteps
+          : Math.min(lastCompletedStep.value + 1, totalSteps)
+      } catch (error) {
+        console.error('Не удалось загрузить прогресс с backend:', error)
+      }
+
+      return
+    }
+
+    // Гость получает прогресс из localStorage
+    loadLocalProgress(instructionId, totalSteps)
   }
 
-  // проверка, разрешено ли открыть шаг
+  // Проверяем, разрешено ли открыть шаг
   function canOpenStep(stepNumber: number): boolean {
     return stepNumber <= lastCompletedStep.value + 1
   }
 
-  // переходим к выбранному шагу
+  // Переходим к выбранному шагу
   function selectStep(stepNumber: number, instructionId: number) {
     if (!canOpenStep(stepNumber)) return
 
     activeStepNumber.value = stepNumber
-    saveLocalProgress(instructionId)
+
+    // Активный шаг сохраняем локально только для гостя
+    if (!auth.isAuthenticated) {
+      saveLocalProgress(instructionId)
+    }
   }
 
-  // отправляем прогресс на backend
+  // Отправляем прогресс на backend или сохраняем локально
   async function syncProgress(instructionId: number) {
     isSaving.value = true
 
     try {
-      await progressApi.update({
-        instruction_id: instructionId,
-        last_completed_step: lastCompletedStep.value,
-        is_completed: isCompleted.value,
-        session_id: getSessionId(),
-      })
+      await ensureAuthInitialized()
+
+      if (auth.isAuthenticated) {
+        await progressApi.update({
+          instruction_id: instructionId,
+          last_completed_step: lastCompletedStep.value,
+          is_completed: isCompleted.value,
+        })
+      } else {
+        saveLocalProgress(instructionId)
+      }
     } catch (error) {
-      // локальный прогресс сохраняется даже при ошибке сети
-      console.error('Не удалось отправить прогресс:', error)
+      console.error('Не удалось сохранить прогресс:', error)
     } finally {
       isSaving.value = false
     }
   }
 
-  // подтверждаем текущий шаг
-  async function completeCurrentStep(instructionId: number, totalSteps: number) {
+  // Сбрасываем прогресс инструкции
+  async function resetProgress(instructionId: number) {
+    await ensureAuthInitialized()
+
+    if (auth.isAuthenticated) {
+      isSaving.value = true
+
+      try {
+        // Используем существующий endpoint обновления прогресса
+        await progressApi.update({
+          instruction_id: instructionId,
+          last_completed_step: 0,
+          is_completed: false,
+        })
+      } finally {
+        isSaving.value = false
+      }
+    }
+
+    // Меняем состояние только после успешного ответа backend
+    lastCompletedStep.value = 0
+    activeStepNumber.value = 1
+    isCompleted.value = false
+
+    // Гостевой прогресс сбрасываем только в браузере
+    if (!auth.isAuthenticated) {
+      saveLocalProgress(instructionId)
+    }
+  }
+
+  // Подтверждаем текущий шаг
+  async function completeCurrentStep(
+    instructionId: number,
+    totalSteps: number,
+  ) {
     const current = activeStepNumber.value
 
     if (!canOpenStep(current)) return
 
-    // если шаг выполнен, переходим дальше
+    // Если шаг уже выполнен, просто переходим дальше
     if (current <= lastCompletedStep.value) {
       if (current < totalSteps) {
         activeStepNumber.value = current + 1
       }
 
-      saveLocalProgress(instructionId)
+      if (!auth.isAuthenticated) {
+        saveLocalProgress(instructionId)
+      }
+
       return
     }
 
-    // нельзя пропустить шаг
+    // Нельзя пропустить шаг
     if (current !== lastCompletedStep.value + 1) return
 
     lastCompletedStep.value = current
@@ -164,16 +232,11 @@ export const useProgressStore = defineStore('progress', () => {
       activeStepNumber.value = current + 1
     }
 
-    saveLocalProgress(instructionId)
-
-    // синхронизируем прогресс с backend
     await syncProgress(instructionId)
   }
 
-  // процент выполнения
-  const percentage = computed(() => {
-    return lastCompletedStep.value
-  })
+  // Процент выполнения
+  const percentage = computed(() => lastCompletedStep.value)
 
   return {
     lastCompletedStep,

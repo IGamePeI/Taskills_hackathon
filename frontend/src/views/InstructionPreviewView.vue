@@ -61,7 +61,7 @@ async function loadInstruction() {
     instruction.value = await instructionsApi.getById(id)
 
     // загружаем сохранённый прогресс инструкции
-    progress.loadProgress(id, instruction.value.steps.length)
+    await progress.loadProgress(id, instruction.value.steps.length)
   } catch (err) {
     console.error('Ошибка загрузки инструкции:', err)
     error.value = 'Не удалось загрузить инструкцию. Возможно, она не существует.'
@@ -83,13 +83,20 @@ function startInstruction() {
 async function restartInstruction() {
   if (!instruction.value || completedSteps.value === 0) return
 
-  const confirmed = window.confirm('Начать прохождение заново? Текущий прогресс будет сброшен.')
+  const confirmed = window.confirm(
+    'Начать прохождение заново? Текущий прогресс будет сброшен.',
+  )
 
   if (!confirmed) return
 
-  await progress.resetProgress(instruction.value.id)
+  try {
+    await progress.resetProgress(instruction.value.id)
+    startInstruction()
+  } catch (error) {
+    console.error('Не удалось сбросить прогресс:', error)
 
-  startInstruction()
+    window.alert('Не удалось сбросить прогресс. Попробуйте ещё раз.')
+  }
 }
 
 watch(() => route.params.id, loadInstruction, { immediate: true })
@@ -209,7 +216,7 @@ watch(() => route.params.id, loadInstruction, { immediate: true })
           <button
             class="preview-restart-button"
             type="button"
-            :disabled="completedSteps === 0"
+            :disabled="completedSteps === 0 || progress.isSaving"
             @click="restartInstruction"
           >
             <span>↻</span>

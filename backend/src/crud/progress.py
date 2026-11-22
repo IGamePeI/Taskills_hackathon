@@ -25,9 +25,13 @@ async def upsert_progress(
     db_progress = result.scalar_one_or_none()
 
     if db_progress:
-        was_completed = db_progress.is_completed
-        db_progress.last_completed_step = max(db_progress.last_completed_step, data.last_completed_step)
-        db_progress.is_completed = data.is_completed or was_completed
+        if data.last_completed_step == 0 and not data.is_completed:
+            db_progress.last_completed_step = 0
+            db_progress.is_completed = False
+        else:
+            was_completed = db_progress.is_completed
+            db_progress.last_completed_step = max(db_progress.last_completed_step, data.last_completed_step)
+            db_progress.is_completed = data.is_completed or was_completed
     else:
         db_progress = progress_model.UserProgress(
             user_id=user_id,
