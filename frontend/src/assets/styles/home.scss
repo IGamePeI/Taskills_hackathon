@@ -1,0 +1,656 @@
+@use './variables' as *;
+@use './mixins' as *;
+
+// главный экран
+
+.hero {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  align-items: center;
+  gap: $spacing-3xl;
+
+  min-height: 610px;
+
+  padding: $spacing-2xl max(calc((100% - #{$container-width}) / 2), $spacing-lg);
+
+  background: $background;
+  @include paper-texture;
+
+  border-bottom: 1px solid $border;
+}
+
+.hero-content {
+  max-width: 610px;
+}
+
+.hero-label {
+  display: inline-block;
+
+  color: $primary;
+  font-family: $font-family-mono;
+  font-size: $font-size-xs;
+  font-weight: 500;
+  letter-spacing: 1px;
+}
+
+.hero h1 {
+  margin: $spacing-lg 0;
+
+  font-family: $font-family-display;
+  font-size: clamp(48px, 5.5vw, 76px);
+  font-weight: 400;
+  line-height: 1.05;
+  letter-spacing: -2px;
+
+  span {
+    color: $primary;
+  }
+}
+
+.hero-description {
+  max-width: 490px;
+  margin-bottom: $spacing-xl;
+
+  color: $text-secondary;
+  font-size: $font-size-lg;
+  line-height: 1.7;
+}
+
+.hero-actions {
+  display: flex;
+  align-items: center;
+  gap: $spacing-md;
+}
+
+.hero-note {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+
+  margin-top: $spacing-2xl;
+
+  color: $text-secondary;
+  font-family: $font-family-mono;
+  font-size: $font-size-xs;
+}
+
+.hero-note-line {
+  width: 28px;
+  height: 1px;
+  background: $primary;
+}
+
+// карточка
+
+.hero-visual {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  padding: $spacing-lg;
+}
+
+.guide-preview {
+  width: 100%;
+  max-width: 430px;
+  padding: $spacing-xl;
+
+  border: 1px solid $border;
+  border-radius: $radius-lg;
+
+  background: $surface;
+
+  box-shadow: 8px 8px 0 rgba(31, 27, 24, 0.05);
+
+  transform: rotate(1.5deg);
+  transition: transform 0.3s ease;
+}
+
+// движение карточки только на пк
+@media (hover: hover) and (pointer: fine) {
+  .guide-preview:hover {
+    transform: rotate(0deg) translateY(-6px);
+  }
+}
+
+.preview-top,
+.preview-footer,
+.progress-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  color: $text-secondary;
+  font-family: $font-family-mono;
+  font-size: 10px;
+  letter-spacing: 0.5px;
+}
+
+.preview-top {
+  padding-bottom: $spacing-md;
+  border-bottom: 1px solid $border;
+}
+
+.guide-preview h2 {
+  margin: $spacing-xl 0 $spacing-sm;
+
+  font-family: $font-family-display;
+  font-size: 32px;
+  font-weight: 400;
+  line-height: 1.15;
+}
+
+.preview-description {
+  margin-bottom: $spacing-lg;
+
+  color: $text-secondary;
+  font-size: $font-size-sm;
+  line-height: 1.6;
+}
+
+.preview-divider {
+  height: 1px;
+  margin: $spacing-lg 0;
+  background: $border;
+}
+
+.preview-step {
+  display: grid;
+  grid-template-columns: 30px 1fr 20px;
+  align-items: center;
+  gap: $spacing-sm;
+
+  padding: $spacing-md 0;
+
+  color: $text-secondary;
+  font-size: $font-size-sm;
+
+  border-bottom: 1px solid rgba(217, 208, 194, 0.6);
+
+  &:last-of-type {
+    border-bottom: none;
+  }
+}
+
+.step-number {
+  color: $text-secondary;
+  font-family: $font-family-mono;
+  font-size: $font-size-xs;
+}
+
+.completed {
+  color: $text;
+}
+
+.completed .step-number,
+.step-status {
+  color: $primary;
+}
+
+.step-status {
+  font-weight: 700;
+  text-align: center;
+}
+
+.preview-progress {
+  margin-top: $spacing-lg;
+}
+
+.progress-track {
+  height: 5px;
+  margin-top: $spacing-sm;
+
+  overflow: hidden;
+  border-radius: 10px;
+
+  background: $border;
+}
+
+.progress-value {
+  width: 66.66%;
+  height: 100%;
+  border-radius: inherit;
+  background: $primary;
+}
+
+.preview-footer {
+  margin-top: $spacing-xl;
+  padding-top: $spacing-md;
+
+  border-top: 1px solid $border;
+}
+
+.visual-index {
+  position: absolute;
+  right: 0;
+  bottom: -10px;
+
+  color: $text-secondary;
+  font-family: $font-family-mono;
+  font-size: 9px;
+  letter-spacing: 1px;
+}
+
+// главная кнопка
+
+.primary-button {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  gap: $spacing-md;
+
+  padding: $spacing-md $spacing-lg;
+
+  border: none;
+  border-radius: $radius-md;
+
+  background: $primary;
+  color: $surface;
+
+  font-size: $font-size-sm;
+  font-weight: 600;
+
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: $primary-hover;
+    transform: translateY(-2px);
+  }
+}
+
+// популярные инструкции
+
+.popular-section {
+  @include container;
+  padding: $spacing-2xl 0;
+
+  background: $surface;
+  border-bottom: 1px solid $border;
+}
+
+.popular-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+  gap: $spacing-xl;
+
+  margin-bottom: $spacing-2xl;
+}
+
+.popular-heading-content {
+  max-width: 650px;
+
+  .section-label {
+    color: $primary;
+    font-family: $font-family-mono;
+    font-size: $font-size-xs;
+    font-weight: 500;
+    letter-spacing: 1px;
+  }
+
+  h2 {
+    margin: $spacing-md 0;
+    font-family: $font-family-display;
+    font-size: clamp(36px, 4vw, 52px);
+    font-weight: 400;
+    line-height: 1.1;
+    letter-spacing: -1px;
+
+    span {
+      color: $primary;
+    }
+  }
+
+  p {
+    margin: 0;
+    color: $text-secondary;
+    font-size: $font-size-md;
+    line-height: 1.6;
+  }
+}
+
+// карусель
+
+.popular-viewport {
+  width: 100%;
+  overflow: hidden;
+
+  cursor: grab;
+  touch-action: pan-y;
+  user-select: none;
+
+  &:active {
+    cursor: grabbing;
+  }
+}
+
+.popular-track {
+  display: flex;
+  width: max-content;
+
+  will-change: transform;
+}
+
+.popular-group {
+  display: flex;
+  flex-shrink: 0;
+  gap: $spacing-md;
+
+  padding-right: $spacing-md;
+}
+
+// карточка инструкции
+
+.popular-card {
+  position: relative;
+
+  display: flex;
+  flex: 0 0 clamp(280px, 30vw, 360px);
+  flex-direction: column;
+  align-items: stretch;
+
+  min-height: 290px;
+  padding: $spacing-xl;
+
+  overflow: hidden;
+
+  border: 1px solid $border;
+  border-radius: $radius-lg;
+
+  background: $surface-raised;
+  color: $text;
+  text-align: left;
+
+  cursor: pointer;
+
+  transition:
+    border-color 0.2s ease,
+    background-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.popular-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: $spacing-sm;
+
+  margin-bottom: $spacing-xl;
+}
+
+.popular-category {
+  color: $primary;
+  font-family: $font-family-mono;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.7px;
+  text-transform: uppercase;
+}
+
+.popular-number {
+  color: $text-secondary;
+  font-family: $font-family-mono;
+  font-size: 11px;
+}
+
+.popular-card-title {
+  display: block;
+
+  margin-bottom: $spacing-md;
+
+  font-family: $font-family-display;
+  font-size: 29px;
+  font-weight: 400;
+  line-height: 1.15;
+  letter-spacing: -0.4px;
+}
+
+.popular-card-description {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+
+  margin-bottom: $spacing-xl;
+
+  color: $text-secondary;
+  font-size: $font-size-sm;
+  line-height: 1.65;
+}
+
+.popular-card-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: $spacing-sm;
+
+  margin-top: auto;
+  padding-top: $spacing-md;
+
+  border-top: 1px solid $border;
+
+  font-family: $font-family-mono;
+  font-size: $font-size-xs;
+}
+
+.popular-author {
+  overflow: hidden;
+
+  color: $text-secondary;
+  font-size: 12px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.popular-views {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+
+  flex-shrink: 0;
+
+  color: $text;
+  font-size: 12px;
+
+  span {
+    color: $primary;
+    font-size: 14px;
+  }
+}
+
+@media (min-width: 1024px) and (hover: hover) and (pointer: fine) {
+  // карусель во всю длину
+  .popular-viewport {
+    width: calc(100vw - $spacing-2xl * 2);
+    margin-left: calc(50% - 50vw + $spacing-2xl);
+  }
+
+  // выделение карточки при наведении мыши
+  .popular-card:hover {
+    border-color: $primary;
+    background: #fffdf9;
+    box-shadow: 0 5px 18px rgba(31, 27, 24, 0.07);
+  }
+}
+
+// нижняя строка блока
+
+.popular-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  column-gap: $spacing-lg;
+  row-gap: $spacing-sm;
+  margin-top: $spacing-xl;
+  padding-top: $spacing-md;
+  border-top: 1px solid $border;
+  color: $text-secondary;
+  font-family: $font-family-mono;
+  font-size: 10px;
+  letter-spacing: 0.5px;
+}
+
+.popular-catalog-link {
+  flex-shrink: 0;
+  white-space: nowrap;
+  padding: 8px 0;
+  border: none;
+  background: transparent;
+  color: $primary;
+  font-family: $font-family;
+  font-size: $font-size-xs;
+  font-weight: 600;
+  transition: color 0.2s ease;
+
+  span {
+    margin-left: 5px;
+  }
+
+  &:hover {
+    color: $primary-hover;
+  }
+}
+
+// сообщения загрузки и пустого списка
+
+.popular-message {
+  padding: $spacing-3xl $spacing-lg;
+
+  border: 1px dashed $border;
+  border-radius: $radius-lg;
+
+  color: $text-secondary;
+  text-align: center;
+}
+
+// планшеты
+
+@include tablet {
+  // главная
+
+  .hero {
+    grid-template-columns: 1fr 0.85fr;
+    gap: $spacing-xl;
+    padding: $spacing-lg;
+  }
+
+  .categories-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  // популярные инструкции
+
+  .popular-section {
+    padding: $spacing-xl $spacing-lg;
+  }
+
+  .popular-card {
+    flex-basis: 320px;
+  }
+}
+
+// телефоны
+
+@include mobile {
+  // главная
+
+  .hero {
+    grid-template-columns: 1fr;
+    gap: $spacing-xl;
+    padding: $spacing-lg $spacing-md;
+  }
+
+  .hero h1 {
+    font-size: 48px;
+  }
+
+  .hero-visual {
+    padding: $spacing-md;
+  }
+
+  .guide-preview {
+    max-width: 100%;
+  }
+
+  .visual-index {
+    right: $spacing-md;
+  }
+
+  // популярные инструкции
+
+  .popular-section {
+    padding: $spacing-lg $spacing-md;
+  }
+
+  .popular-heading {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: $spacing-lg;
+  }
+
+  .popular-controls {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .popular-card {
+    flex-basis: 285px;
+    min-height: 270px;
+    padding: $spacing-lg;
+  }
+
+  .popular-card-title {
+    font-size: 26px;
+  }
+}
+
+// маленькие экраны
+
+@include small-mobile {
+  // главная
+
+  .hero h1 {
+    font-size: 38px;
+    letter-spacing: -1px;
+  }
+
+  .guide-preview {
+    padding: $spacing-md;
+  }
+
+  .guide-preview h2 {
+    font-size: 27px;
+  }
+
+  .section-heading h2,
+  .cta-section h2 {
+    font-size: 28px;
+  }
+
+  .category-card,
+  .feature-card {
+    padding: $spacing-md;
+  }
+
+  .primary-button {
+    width: 100%;
+  }
+
+  // популярные инструкции
+
+  .popular-heading-content h2 {
+    font-size: 34px;
+  }
+
+  .popular-card {
+    flex-basis: 270px;
+    min-height: 260px;
+  }
+
+  .carousel-hint {
+    font-size: 9px;
+  }
+}
