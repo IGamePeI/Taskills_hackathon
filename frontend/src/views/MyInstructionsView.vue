@@ -190,13 +190,17 @@ async function refreshInstructions() {
         </section>
 
         <template v-if="featuredInstruction">
-          <FeaturedInstructionCard :instruction="featuredInstruction" />
+          <FeaturedInstructionCard 
+            :instruction="featuredInstruction" 
+            show-edit
+          />
 
           <section v-if="remainingInstructions.length" class="instructions-grid">
             <InstructionCard
               v-for="instruction in remainingInstructions"
               :key="instruction.id"
               :instruction="instruction"
+              show-edit
             />
           </section>
         </template>

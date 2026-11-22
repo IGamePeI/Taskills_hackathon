@@ -4,6 +4,7 @@ import { getStepsLabel } from '../declension'
 
 defineProps<{
   instruction: Instructions
+  showEdit?: boolean
 }>()
 </script>
 
@@ -33,17 +34,22 @@ defineProps<{
       </div>
 
       <div class="featured-bottom">
-        <div class="featured-author">
+        <div v-if="!showEdit" class="featured-author">
           <span class="author-mark">
             {{ instruction.author?.username?.charAt(0).toUpperCase() || 'G' }}
           </span>
-
-          <span>
-            {{ instruction.author?.username || 'Автор' }}
-          </span>
+          <span>{{ instruction.author?.username || 'Автор' }}</span>
         </div>
 
-        <div class="featured-meta">
+        <RouterLink
+          v-else
+          :to="{ name: 'instruction-edit', params: { id: instruction.id } }"
+          class="card-edit-button"
+        >
+          Редактировать
+        </RouterLink>
+
+        <div class="card-meta">
           <span>{{ instruction.views_count }} просм.</span>
         </div>
       </div>
