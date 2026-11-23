@@ -50,20 +50,22 @@ defineProps<{
         <span>{{ instruction.author?.username || 'Автор' }}</span>
       </div>
 
-      <RouterLink
-        v-else
-        :to="{ name: 'instruction-edit', params: { id: instruction.id } }"
-        class="card-edit-button"
-      >
-        Редактировать
-      </RouterLink>
+      <div v-else>
+        <RouterLink
+          :to="{ name: 'instruction-edit', params: { id: instruction.id } }"
+          class="card-edit-button"
+        >
+          Редактировать
+        </RouterLink>
 
-      <RouterLink
-        :to="{ name: 'instruction-analytics', params: { id: instruction.id } }"
-        class="card-analytics-button"
-      >
-        Аналитика
-      </RouterLink>
+        <RouterLink
+          :to="{ name: 'instruction-analytics', params: { id: instruction.id } }"
+          class="card-analytics-button"
+          style="padding-left: 16px;"
+        >
+          Аналитика
+        </RouterLink>
+      </div>
 
       <div class="card-meta">
         <span>{{ instruction.views_count }} просм.</span>
