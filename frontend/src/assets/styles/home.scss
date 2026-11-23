@@ -263,7 +263,9 @@
 
 .popular-section {
   @include container;
-  padding: $spacing-2xl 0;
+  max-width: calc(1200px + $spacing-lg * 2);
+  padding: $spacing-2xl $spacing-lg;
+
 
   background: $surface;
   border-bottom: 1px solid $border;

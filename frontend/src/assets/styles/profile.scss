@@ -1,6 +1,13 @@
 @use './variables' as *;
 @use './mixins' as *;
 
+:global(.app:has(.profile-page)) {
+  height: 100svh;
+
+  background-color: $background;
+  @include paper-texture;
+}
+
 .profile-page {
   padding: $spacing-xl 0;
 

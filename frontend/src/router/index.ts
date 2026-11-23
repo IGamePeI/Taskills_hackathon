@@ -65,6 +65,7 @@ const router = createRouter({
       component: MyInstructionsView,
       meta: {
         requiresAuth: true,
+        requiresExpert: true,
       },
     },
     {
@@ -73,6 +74,7 @@ const router = createRouter({
       component: InstructionCreateView,
       meta: {
         requiresAuth: true,
+        requiresExpert: true,
       },
     },
     {
@@ -81,25 +83,28 @@ const router = createRouter({
       component: InstructionEditView,
       meta: {
         requiresAuth: true,
+        requiresExpert: true,
       },
     },
   ],
 })
 
-// проверка авторизации перед переходом
+// проверка прав перед переходом
 router.beforeEach(async (to) => {
-  if (!to.meta.requiresAuth) {
-    return true
-  }
-
   const authStore = useAuthStore()
 
-  if (!authStore.isInitialized) {
-    await authStore.fetchCurrentUser()
+  if (to.meta.requiresAuth || to.meta.requiresExpert) {
+    if (!authStore.isInitialized) {
+      await authStore.fetchCurrentUser()
+    }
+
+    if (!authStore.isAuthenticated) {
+      return { name: 'login' }
+    }
   }
 
-  if (!authStore.isAuthenticated) {
-    return { name: 'login' }
+  if (to.meta.requiresExpert && authStore.user?.role !== 'expert') {
+    return { name: 'home' }
   }
 
   return true

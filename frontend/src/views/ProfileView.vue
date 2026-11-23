@@ -131,7 +131,11 @@ const registrationDate = computed(() => {
         </section>
 
         <!-- Переход к собственным инструкциям -->
-        <RouterLink :to="{ name: 'my-instructions' }" class="profile-instructions-link">
+        <RouterLink 
+          v-if="authStore.user.role === 'expert'"
+          :to="{ name: 'my-instructions' }" 
+          class="profile-instructions-link"
+        >
           <div class="profile-instructions-info">
             <span class="section-number">02 / MY COLLECTION</span>
 
