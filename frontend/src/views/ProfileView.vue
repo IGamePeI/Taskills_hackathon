@@ -1,25 +1,33 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { useAuthStore } from '../stores/auth'
+import type { UpdateProfileData, UserRole } from '../types/auth'
 
 const authStore = useAuthStore()
+
+// состояние редактирования
+const isEditing = ref(false)
+const isSaving = ref(false)
+const saveError = ref('')
+
+// поля формы
+const username = ref('')
+const email = ref('')
+const role = ref<UserRole>('student')
 
 // первая буква имени для аватара
 const userInitial = computed(() => {
   return authStore.user?.username.trim().charAt(0).toUpperCase() || '?'
 })
 
-// переводим роль пользователя
+// название роли для отображения
 const roleLabel = computed(() => {
-  const role = authStore.user?.role.toLowerCase()
-
-  const roles: Record<string, string> = {
-    student: 'Участник',
-    author: 'Автор',
-    admin: 'Администратор',
+  const roles: Record<UserRole, string> = {
+    student: 'Ученик',
+    expert: 'Эксперт',
   }
 
-  return role ? roles[role] || authStore.user?.role : 'Не указана'
+  return authStore.user ? roles[authStore.user.role] : 'Не указана'
 })
 
 // форматируем дату регистрации
@@ -40,6 +48,58 @@ const registrationDate = computed(() => {
     year: 'numeric',
   }).format(parsedDate)
 })
+
+// открытие формы редактирования
+function startEditing() {
+  if (!authStore.user) return
+
+  username.value = authStore.user.username
+  email.value = authStore.user.email
+  role.value = authStore.user.role
+  saveError.value = ''
+  isEditing.value = true
+}
+
+// отмена редактирования
+function cancelEditing() {
+  if (isSaving.value) return
+
+  isEditing.value = false
+  saveError.value = ''
+}
+
+// сохранение изменений
+async function saveProfile() {
+  if (!authStore.user) return
+
+  saveError.value = ''
+
+  const data: UpdateProfileData = {
+    username: username.value.trim(),
+    email: email.value.trim(),
+    role: role.value,
+  }
+
+  if (!data.username || !data.email) {
+    saveError.value = 'Заполните все поля'
+    return
+  }
+
+  try {
+    isSaving.value = true
+
+    await authStore.updateProfile(data)
+
+    isEditing.value = false
+  } catch (error: unknown) {
+    saveError.value =
+      error instanceof Error
+        ? error.message
+        : 'Не удалось сохранить изменения. Попробуйте ещё раз.'
+  } finally {
+    isSaving.value = false
+  }
+}
 </script>
 
 <template>
@@ -88,52 +148,109 @@ const registrationDate = computed(() => {
           </div>
         </article>
 
-        <!-- Дополнительная информация -->
+        <!-- Данные аккаунта -->
         <section class="profile-details">
           <div class="details-heading">
             <h2>Данные аккаунта</h2>
+
+            <button
+              v-if="!isEditing"
+              class="profile-edit-button"
+              type="button"
+              @click="startEditing"
+            >
+              Редактировать
+            </button>
           </div>
 
-          <div class="details-list">
+          <!-- Режим просмотра -->
+          <div v-if="!isEditing" class="details-list">
             <div class="detail-item">
               <span class="detail-label">Имя пользователя</span>
-              <span class="detail-value">
-                {{ authStore.user.username }}
-              </span>
+              <span class="detail-value">{{ authStore.user.username }}</span>
             </div>
 
             <div class="detail-item">
               <span class="detail-label">Электронная почта</span>
-              <span class="detail-value">
-                {{ authStore.user.email }}
-              </span>
+              <span class="detail-value">{{ authStore.user.email }}</span>
             </div>
 
             <div class="detail-item">
               <span class="detail-label">Роль в системе</span>
-              <span class="detail-value">
-                {{ roleLabel }}
-              </span>
+              <span class="detail-value">{{ roleLabel }}</span>
             </div>
 
             <div class="detail-item">
               <span class="detail-label">Дата регистрации</span>
-              <span class="detail-value">
-                {{ registrationDate }}
-              </span>
+              <span class="detail-value">{{ registrationDate }}</span>
             </div>
 
             <div class="detail-item">
               <span class="detail-label">Идентификатор</span>
-              <span class="detail-value detail-id"> #{{ authStore.user.id }} </span>
+              <span class="detail-value detail-id">#{{ authStore.user.id }}</span>
             </div>
           </div>
+
+          <!-- Режим редактирования -->
+          <form v-else class="profile-edit-form" @submit.prevent="saveProfile">
+            <label class="profile-form-field">
+              <span>Имя пользователя</span>
+              <input
+                v-model="username"
+                type="text"
+                placeholder="Введите имя пользователя"
+                required
+                maxlength="50"
+              />
+            </label>
+
+            <label class="profile-form-field">
+              <span>Электронная почта</span>
+              <input
+                v-model="email"
+                type="email"
+                placeholder="Введите электронную почту"
+                required
+              />
+            </label>
+
+            <label class="profile-form-field">
+              <span>Роль в системе</span>
+              <select v-model="role">
+                <option value="student">Ученик</option>
+                <option value="expert">Эксперт</option>
+              </select>
+            </label>
+
+            <p v-if="saveError" class="profile-form-error">
+              {{ saveError }}
+            </p>
+
+            <div class="profile-form-actions">
+              <button
+                class="profile-save-button"
+                type="submit"
+                :disabled="isSaving"
+              >
+                {{ isSaving ? 'Сохранение...' : 'Сохранить изменения' }}
+              </button>
+
+              <button
+                class="profile-cancel-button"
+                type="button"
+                :disabled="isSaving"
+                @click="cancelEditing"
+              >
+                Отмена
+              </button>
+            </div>
+          </form>
         </section>
 
-        <!-- Переход к собственным инструкциям -->
-        <RouterLink 
+        <!-- Переход к собственным инструкциям — только для эксперта -->
+        <RouterLink
           v-if="authStore.user.role === 'expert'"
-          :to="{ name: 'my-instructions' }" 
+          :to="{ name: 'my-instructions' }"
           class="profile-instructions-link"
         >
           <div class="profile-instructions-info">
@@ -141,7 +258,9 @@ const registrationDate = computed(() => {
 
             <h2>Мои инструкции</h2>
 
-            <p>Просматривайте созданные вами руководства и управляйте собственной коллекцией</p>
+            <p>
+              Просматривайте созданные вами руководства и управляйте собственной коллекцией
+            </p>
           </div>
 
           <div class="profile-instructions-action">

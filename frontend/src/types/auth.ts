@@ -1,3 +1,6 @@
+// роли пользователя
+export type UserRole = 'student' | 'expert'
+
 // данные для регистрации
 export interface RegisterData {
   username: string
@@ -11,12 +14,19 @@ export interface LoginData {
   password: string
 }
 
+// данные для обновления профиля
+export interface UpdateProfileData {
+  username: string
+  email: string
+  role: UserRole
+}
+
 // информация о пользователе
 export interface User {
   id: number
   username: string
   email: string
-  role: string
+  role: UserRole
   created_at: string
   updated_at: string
 }

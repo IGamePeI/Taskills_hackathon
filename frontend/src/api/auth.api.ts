@@ -1,5 +1,5 @@
 import http from './http'
-import type { RegisterData, LoginData, User } from '../types/auth'
+import type { RegisterData, LoginData, User, UpdateProfileData } from '../types/auth'
 
 export const authApi = {
   // регистрация
@@ -22,6 +22,19 @@ export const authApi = {
   // обновление access-токена
   async refresh(): Promise<void> {
     await http.post('/v1/auth/refresh')
+  },
+
+  // обновление профиля
+  async updateProfile(
+    userId: number,
+    data: UpdateProfileData,
+  ): Promise<User> {
+    const response = await http.patch<User>(
+      `/v1/users/${userId}`,
+      data,
+    )
+
+    return response.data
   },
 
   // выход

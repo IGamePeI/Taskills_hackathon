@@ -350,6 +350,155 @@
   }
 }
 
+// редактирование профиля
+
+.details-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: $spacing-md;
+}
+
+.profile-edit-button {
+  flex-shrink: 0;
+  padding: 10px 16px;
+
+  border: 1px solid $primary;
+  border-radius: $radius-md;
+
+  background: transparent;
+  color: $primary;
+
+  font-family: inherit;
+  font-size: $font-size-sm;
+  cursor: pointer;
+
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
+
+  &:hover {
+    background-color: $primary;
+    color: $surface-raised;
+  }
+}
+
+.profile-edit-form {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-lg;
+}
+
+.profile-form-field {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-sm;
+
+  span {
+    color: $text-secondary;
+    font-size: $font-size-sm;
+  }
+
+  input,
+  select {
+    width: 100%;
+    min-height: 44px;
+    padding: 10px 12px;
+
+    border: 1px solid $border;
+    border-radius: $radius-md;
+    outline: none;
+
+    background-color: $surface-raised;
+    color: $text;
+
+    font-family: inherit;
+    font-size: $font-size-sm;
+
+    transition: border-color 0.2s ease;
+
+    &:focus {
+      border-color: $primary;
+    }
+  }
+}
+
+.profile-form-error {
+  margin: 0;
+
+  color: #c0392b;
+  font-size: $font-size-sm;
+}
+
+.profile-form-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $spacing-md;
+  margin-top: $spacing-sm;
+}
+
+.profile-save-button,
+.profile-cancel-button {
+  min-height: 44px;
+  padding: 10px 18px;
+
+  border: 1px solid transparent;
+  border-radius: $radius-md;
+
+  font-family: inherit;
+  font-size: $font-size-sm;
+  cursor: pointer;
+
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    opacity 0.2s ease;
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+.profile-save-button {
+  background-color: $primary;
+  color: $surface-raised;
+
+  &:hover:not(:disabled) {
+    opacity: 0.88;
+  }
+}
+
+.profile-cancel-button {
+  border-color: $border;
+  background-color: transparent;
+  color: $text;
+
+  &:hover:not(:disabled) {
+    border-color: $primary;
+  }
+}
+
+@include mobile {
+  .details-heading {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .profile-edit-button {
+    width: 100%;
+  }
+
+  .profile-form-actions {
+    flex-direction: column;
+  }
+
+  .profile-save-button,
+  .profile-cancel-button {
+    width: 100%;
+  }
+}
+
 // планшеты
 
 @include tablet {
