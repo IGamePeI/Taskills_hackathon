@@ -831,9 +831,10 @@
   border: 0;
 }
 
-// кнопка редактирования
+// кнопка редактирования и аналитики
 
-.card-edit-button {
+.card-edit-button,
+.card-analytics-button {
   display: inline-flex;
   align-items: center;
   gap: 8px;

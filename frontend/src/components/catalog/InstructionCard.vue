@@ -58,6 +58,13 @@ defineProps<{
         Редактировать
       </RouterLink>
 
+      <RouterLink
+        :to="{ name: 'instruction-analytics', params: { id: instruction.id } }"
+        class="card-analytics-button"
+      >
+        Аналитика
+      </RouterLink>
+
       <div class="card-meta">
         <span>{{ instruction.views_count }} просм.</span>
       </div>

@@ -16,6 +16,8 @@ import MyInstructionsView from '../views/MyInstructionsView.vue'
 import InstructionCreateView from '../views/InstructionCreateView.vue'
 import InstructionEditView from '../views/InstructionEditView.vue'
 
+import AnalyticsView from '../views/AnalyticsView.vue'
+
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
 
@@ -84,6 +86,14 @@ const router = createRouter({
       meta: {
         requiresAuth: true,
         requiresExpert: true,
+      },
+    },
+    {
+      path: '/instructions/:id/analytics',
+      name: 'instruction-analytics',
+      component: AnalyticsView,
+      meta: {
+        requiresAuth: true,
       },
     },
   ],

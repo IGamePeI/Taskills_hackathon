@@ -1,0 +1,434 @@
+@use './variables' as *;
+@use './mixins' as *;
+
+.analytics-page {
+  min-height: 100vh;
+  padding-bottom: $spacing-lg;
+
+  background-color: $background;
+  @include paper-texture;
+}
+
+.analytics-container {
+  @include container;
+  max-width: 1200px;
+}
+
+// Заголовок
+
+.analytics-heading {
+  padding: $spacing-xl 0 $spacing-2xl;
+  border-bottom: 1px solid $border;
+
+  .section-number {
+    color: $primary;
+    font-family: $font-family-mono;
+    font-size: $font-size-xs;
+    letter-spacing: 0.5px;
+  }
+
+  h1 {
+    margin: $spacing-lg 0;
+
+    color: $text;
+    font-family: $font-family-display;
+    font-size: clamp(48px, 6vw, 76px);
+    font-weight: 400;
+    line-height: 1.05;
+
+    span {
+      display: block;
+      color: $primary;
+      font-style: italic;
+    }
+  }
+
+  p {
+    max-width: 550px;
+    margin-bottom: $spacing-lg;
+
+    color: $text-secondary;
+    font-size: $font-size-md;
+    line-height: 1.8;
+  }
+}
+
+.analytics-back {
+  display: inline-block;
+  color: $primary;
+  font-size: $font-size-sm;
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+// Заголовки секций
+
+.analytics-section-heading {
+  margin-bottom: $spacing-xl;
+
+  .section-number {
+    color: $primary;
+    font-family: $font-family-mono;
+    font-size: $font-size-xs;
+    letter-spacing: 0.5px;
+  }
+
+  h2 {
+    margin: $spacing-md 0;
+
+    color: $text;
+    font-family: $font-family-display;
+    font-size: clamp(32px, 4vw, 46px);
+    font-weight: 400;
+  }
+
+  p {
+    max-width: 550px;
+    color: $text-secondary;
+    font-size: $font-size-sm;
+    line-height: 1.7;
+  }
+}
+
+// Общие показатели
+
+.analytics-overview {
+  padding: $spacing-2xl 0;
+}
+
+.analytics-cards {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: $spacing-lg;
+}
+
+.analytics-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  min-height: 190px;
+  padding: $spacing-xl;
+
+  border: 1px solid $border;
+  border-radius: $radius-lg;
+
+  background: $surface-raised;
+
+  strong {
+    margin: $spacing-lg 0;
+
+    color: $text;
+    font-family: $font-family-display;
+    font-size: 64px;
+    font-weight: 400;
+    line-height: 1;
+  }
+}
+
+.analytics-card-accent {
+  background: $primary;
+  border-color: $primary;
+
+  .analytics-card-label,
+  .analytics-card-description,
+  strong {
+    color: $surface-raised;
+  }
+}
+
+.analytics-card-label {
+  color: $text-secondary;
+  font-family: $font-family-mono;
+  font-size: 10px;
+  letter-spacing: 0.5px;
+}
+
+.analytics-card-description {
+  color: $text-secondary;
+  font-size: $font-size-xs;
+}
+
+// Статистика шагов
+
+.analytics-steps {
+  padding: $spacing-xl 0;
+}
+
+.analytics-step-list {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-lg;
+}
+
+.analytics-step-card {
+  padding: $spacing-xl;
+
+  border: 1px solid $border;
+  border-radius: $radius-lg;
+
+  background: $surface-raised;
+}
+
+.analytics-step-heading {
+  margin-bottom: $spacing-xl;
+
+  h3 {
+    margin: $spacing-sm 0 0;
+
+    color: $text;
+    font-family: $font-family-display;
+    font-size: 30px;
+    font-weight: 400;
+    overflow-wrap: anywhere;
+  }
+}
+
+.analytics-step-number {
+  color: $primary;
+  font-family: $font-family-mono;
+  font-size: 10px;
+  letter-spacing: 0.5px;
+}
+
+// Показатели и полосы
+
+.analytics-metric {
+  margin-bottom: $spacing-lg;
+}
+
+.analytics-metric-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: $spacing-md;
+
+  margin-bottom: $spacing-sm;
+
+  span {
+    color: $text-secondary;
+    font-size: $font-size-sm;
+  }
+
+  strong {
+    color: $text;
+    font-family: $font-family-mono;
+    font-size: $font-size-sm;
+  }
+
+  .analytics-danger {
+    color: $primary;
+  }
+}
+
+.analytics-progress {
+  width: 100%;
+  height: 9px;
+
+  overflow: hidden;
+
+  border-radius: $radius-sm;
+  background: $background;
+}
+
+.analytics-progress-fill {
+  height: 100%;
+
+  border-radius: $radius-sm;
+  background: $primary;
+
+  transition: width 0.4s ease;
+}
+
+.analytics-progress-danger {
+  background: #8c3024;
+}
+
+// Нижняя часть карточки
+
+.analytics-step-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  padding-top: $spacing-lg;
+  margin-top: $spacing-lg;
+
+  border-top: 1px solid $border;
+
+  span {
+    color: $text-secondary;
+    font-size: $font-size-sm;
+  }
+
+  strong {
+    color: $primary;
+    font-family: $font-family-mono;
+  }
+}
+
+// Загрузка и ошибки
+
+.analytics-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  min-height: 350px;
+  padding: $spacing-3xl $spacing-lg;
+
+  text-align: center;
+
+  .section-number {
+    color: $primary;
+    font-family: $font-family-mono;
+    font-size: $font-size-xs;
+  }
+
+  h2 {
+    margin: $spacing-lg 0 $spacing-sm;
+
+    color: $text;
+    font-family: $font-family-display;
+    font-size: 38px;
+    font-weight: 400;
+
+    span {
+      color: $primary;
+    }
+  }
+
+  p {
+    max-width: 440px;
+    color: $text-secondary;
+    line-height: 1.7;
+  }
+}
+
+.analytics-loader {
+  width: 36px;
+  height: 36px;
+  margin-top: $spacing-xl;
+
+  border: 2px solid $border;
+  border-top-color: $primary;
+  border-radius: 50%;
+
+  animation: analytics-spin 0.8s linear infinite;
+}
+
+@keyframes analytics-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.analytics-retry {
+  margin-top: $spacing-lg;
+  padding: 12px 20px;
+
+  border: 1px solid $primary;
+  border-radius: $radius-md;
+
+  background: $primary;
+  color: $surface;
+
+  cursor: pointer;
+
+  &:hover {
+    background: $primary-hover;
+  }
+}
+
+// Подвал
+
+.analytics-footer {
+  display: flex;
+  justify-content: space-between;
+  gap: $spacing-md;
+
+  padding-top: $spacing-xl;
+  margin-top: $spacing-xl;
+
+  border-top: 1px solid $border;
+
+  color: $text-secondary;
+  font-family: $font-family-mono;
+  font-size: 10px;
+}
+
+// Адаптивность
+
+@include tablet {
+  .analytics-cards {
+    gap: $spacing-md;
+  }
+
+  .analytics-card {
+    padding: $spacing-lg;
+
+    strong {
+      font-size: 52px;
+    }
+  }
+}
+
+@include mobile {
+  .analytics-page {
+    padding-top: $spacing-xl;
+  }
+
+  .analytics-heading {
+    padding-top: $spacing-md;
+  }
+
+  .analytics-cards {
+    grid-template-columns: 1fr;
+  }
+
+  .analytics-card {
+    min-height: 150px;
+
+    strong {
+      font-size: 52px;
+    }
+  }
+
+  .analytics-step-card {
+    padding: $spacing-lg;
+  }
+
+  .analytics-step-heading h3 {
+    font-size: 26px;
+  }
+
+  .analytics-footer {
+    flex-direction: column;
+    font-size: 9px;
+  }
+}
+
+@include small-mobile {
+  .analytics-heading h1 {
+    font-size: 42px;
+  }
+
+  .analytics-section-heading h2 {
+    font-size: 34px;
+  }
+
+  .analytics-step-card {
+    padding: $spacing-md;
+  }
+
+  .analytics-metric-heading {
+    align-items: flex-start;
+
+    span {
+      font-size: $font-size-xs;
+    }
+  }
+}

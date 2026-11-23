@@ -20,3 +20,21 @@ export interface StoredProgress {
   activeStepNumber: number
   isCompleted: boolean
 }
+
+// статистика отдельного шага
+export interface StepBottleneckStat {
+  step_number: number
+  step_title: string
+  users_reached: number
+  users_dropped_here: number
+  dislikes_count: number
+}
+
+// общая аналитика инструкции
+export interface InstructionAnalytics {
+  instruction_id: number
+  total_started: number
+  total_completed: number
+  completion_rate: number
+  steps_stats: StepBottleneckStat[]
+}
